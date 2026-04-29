@@ -1,0 +1,152 @@
+{% extends "base.html" %}
+
+{% block title %}首�� - Video Crawler{% endblock %}
+{% block nav_home %}active{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h4 class="mb-0"><i class="bi bi-speedometer2 me-2"></i>数据总览</h4>
+    <div class="auto-refresh-toggle">
+        <div class="form-check form-switch">
+            <input class="form-check-input" type="checkbox" id="autoRefresh">
+            <label class="form-check-label" for="autoRefresh">自动刷新 (60s)</label>
+        </div>
+    </div>
+</div>
+
+<!-- Stats Cards -->
+<div class="row g-3 mb-4">
+    <div class="col-sm-6 col-xl-3">
+        <div class="card stat-card h-100">
+            <div class="card-body d-flex align-items-center">
+                <div class="stat-icon text-primary me-3"><i class="bi bi-camera-video"></i></div>
+                <div>
+                    <div class="stat-value" id="stat-videos">{{ stats.video_count | default(0) }}</div>
+                    <div class="stat-label">视频总数</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-6 col-xl-3">
+        <div class="card stat-card h-100">
+            <div class="card-body d-flex align-items-center">
+                <div class="stat-icon text-success me-3"><i class="bi bi-graph-up"></i></div>
+                <div>
+                    <div class="stat-value" id="stat-records">{{ stats.stat_count | default(0) }}</div>
+                    <div class="stat-label">统计记录</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-6 col-xl-3">
+        <div class="card stat-card h-100">
+            <div class="card-body d-flex align-items-center">
+                <div class="stat-icon text-warning me-3"><i class="bi bi-trophy"></i></div>
+                <div>
+                    <div class="stat-value" id="stat-rankings">{{ stats.ranking_snapshots | default(0) }}</div>
+                    <div class="stat-label">排行榜快照</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-6 col-xl-3">
+        <div class="card stat-card h-100">
+            <div class="card-body d-flex align-items-center">
+                <div class="stat-icon text-info me-3"><i class="bi bi-clock-history"></i></div>
+                <div>
+                    {% if last_crawl %}
+                    <div class="stat-value" style="font-size:1rem">
+                        {{ last_crawl.finished_at.strftime('%m-%d %H:%M') if last_crawl.finished_at else '-' }}
+                    </div>
+                    <div class="stat-label">
+                        最近采集
+                        <span class="badge rounded-pill {% if last_crawl.status == 'success' %}status-badge-success{% else %}status-badge-failed{% endif %} ms-1">
+                            {{ last_crawl.status }}
+                        </span>
+                    </div>
+                    {% else %}
+                    <div class="stat-value" style="font-size:1rem">-</div>
+                    <div class="stat-label">最近采集</div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4">
+    <!-- Crawl Logs -->
+    <div class="col-lg-8">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-white border-0 py-3">
+                <h6 class="mb-0"><i class="bi bi-journal-text me-2"></i>最近采集日志</h6>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0 align-middle">
+                        <thead class="table-light">
+                            <tr>
+                                <th>时间</th>
+                                <th>平台</th>
+                                <th>类型</th>
+                                <th>状态</th>
+                                <th>数量</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for log in crawl_logs %}
+                            <tr>
+                                <td class="text-nowrap">{{ log.finished_at.strftime('%m-%d %H:%M') if log.finished_at else '-' }}</td>
+                                <td><span class="badge bg-primary">{{ log.platform }}</span></td>
+                                <td>{{ log.job_type }}</td>
+                                <td>
+                                    <span class="badge rounded-pill {% if log.status == 'success' %}status-badge-success{% else %}status-badge-failed{% endif %}">
+                                        {{ log.status }}
+                                    </span>
+                                </td>
+                                <td>{{ log.items_count }}</td>
+                            </tr>
+                            {% else %}
+                            <tr><td colspan="5" class="text-center text-muted py-4">暂无采集记录</td></tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Top Videos -->
+    <div class="col-lg-4">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-white border-0 py-3">
+                <h6 class="mb-0"><i class="bi bi-fire me-2"></i>热门视频 TOP 5</h6>
+            </div>
+            <div class="list-group list-group-flush">
+                {% for video, stat in top_videos %}
+                <a href="/videos/{{ video.platform }}/{{ video.video_id }}"
+                   class="list-group-item list-group-item-action py-3">
+                    <div class="d-flex align-items-center">
+                        <img src="{{ video.cover_url }}" alt="" class="video-thumbnail-sm me-3"
+                             onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2280%22 height=%2245%22><rect fill=%22%23dee2e6%22 width=%22100%25%22 height=%22100%25%22/></svg>'">
+                        <div class="flex-grow-1 overflow-hidden">
+                            <div class="text-truncate fw-medium" style="font-size:0.9rem">{{ video.title }}</div>
+                            <small class="text-muted">
+                                <i class="bi bi-play-circle me-1"></i>{{ '{:,}'.format(stat.view_count) }}
+                                <i class="bi bi-hand-thumbs-up ms-2 me-1"></i>{{ '{:,}'.format(stat.like_count) }}
+                            </small>
+                        </div>
+                    </div>
+                </a>
+                {% else %}
+                <div class="list-group-item text-center text-muted py-4">暂无数据</div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="/static/js/dashboard.js"></script>
+{% endblock %}

@@ -1,0 +1,114 @@
+{% extends "base.html" %}
+
+{% block title %}{{ video.title if video else '视频详情' }} - Video Crawler{% endblock %}
+{% block nav_videos %}active{% endblock %}
+
+{% block content %}
+<nav aria-label="breadcrumb" class="mb-3">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/videos">视频</a></li>
+        <li class="breadcrumb-item active" id="breadcrumbTitle">
+            {{ video.title[:30] if video else '未找到' }}
+        </li>
+    </ol>
+</nav>
+
+{% if not video %}
+<div class="text-center text-muted py-5">
+    <i class="bi bi-exclamation-triangle" style="font-size:3rem"></i>
+    <h5 class="mt-3">视频未找到</h5>
+    <p>该视频可能尚未被采集，请返回<a href="/videos">视频列表</a>查看。</p>
+</div>
+{% else %}
+<div class="row g-4">
+    <!-- Video Info -->
+    <div class="col-lg-4">
+        <div class="card border-0 shadow-sm">
+            <img src="{{ video.cover_url }}" class="card-img-top" alt=""
+                 onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22320%22 height=%22180%22><rect fill=%22%23dee2e6%22 width=%22100%25%22 height=%22100%25%22/></svg>'">
+            <div class="card-body">
+                <h6 class="card-title">{{ video.title }}</h6>
+                <p class="text-muted small mb-2">
+                    <i class="bi bi-person me-1"></i>{{ video.author_name }}
+                    {% if video.category %}
+                    <span class="ms-2"><i class="bi bi-tag me-1"></i>{{ video.category }}</span>
+                    {% endif %}
+                </p>
+                {% if video.description %}
+                <p class="small text-muted" style="max-height:100px;overflow-y:auto">{{ video.description[:200] }}</p>
+                {% endif %}
+                {% if video.url %}
+                <a href="{{ video.url }}" target="_blank" class="btn btn-sm btn-outline-primary w-100 mt-2">
+                    <i class="bi bi-box-arrow-up-right me-1"></i>在 B站 查看
+                </a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Stats + Chart -->
+    <div class="col-lg-8">
+        <!-- Latest Stats -->
+        <div class="row g-2 mb-3" id="latestStats">
+            <div class="col-12 text-center text-muted py-3">
+                <div class="spinner-border spinner-border-sm"></div> 加载统计数据...
+            </div>
+        </div>
+
+        <!-- Chart -->
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-white border-0 py-3">
+                <h6 class="mb-0"><i class="bi bi-graph-up me-2"></i>数据趋势</h6>
+            </div>
+            <div class="card-body">
+                <div class="chart-container">
+                    <canvas id="statsChart"></canvas>
+                </div>
+                <div class="text-center text-muted py-4 d-none" id="chartEmpty">
+                    <i class="bi bi-bar-chart-line" style="font-size:2rem"></i>
+                    <p class="mt-2 mb-0">数据不足，无法绘制趋势图</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Stats History Table -->
+        <div class="card border-0 shadow-sm mt-3">
+            <div class="card-header bg-white border-0 py-3 d-flex justify-content-between align-items-center">
+                <h6 class="mb-0"><i class="bi bi-table me-2"></i>统计历史</h6>
+                <button class="btn btn-sm btn-outline-secondary" type="button" data-bs-toggle="collapse" data-bs-target="#historyTable">
+                    展开/收起
+                </button>
+            </div>
+            <div class="collapse" id="historyTable">
+                <div class="table-responsive">
+                    <table class="table table-sm mb-0 align-middle">
+                        <thead class="table-light">
+                            <tr>
+                                <th>采集时间</th>
+                                <th>播放</th>
+                                <th>点赞</th>
+                                <th>投币</th>
+                                <th>收藏</th>
+                                <th>评��</th>
+                                <th>弹幕</th>
+                            </tr>
+                        </thead>
+                        <tbody id="historyBody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endblock %}
+
+{% block scripts %}
+{% if video %}
+<script>
+    const VIDEO_PLATFORM = "{{ platform }}";
+    const VIDEO_ID = "{{ video_id }}";
+</script>
+<script src="/static/js/video_detail.js"></script>
+{% endif %}
+{% endblock %}

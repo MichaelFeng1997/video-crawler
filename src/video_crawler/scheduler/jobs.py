@@ -1,9 +1,12 @@
 from __future__ import annotations
 
+import asyncio
 import logging
 from datetime import UTC, datetime
 
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
+
+from video_crawler.notifications.notifier import send_notification
 
 logger = logging.getLogger(__name__)
 
@@ -30,11 +33,23 @@ async def crawl_popular_job(platform_name: str = "bilibili", pages: int = 3):
         repo.log_crawl(platform_name, "popular", "success", total, started_at=started_at)
         session.commit()
         logger.info("[scheduler] Crawled %d popular videos from %s", total, platform_name)
+        await asyncio.to_thread(
+            send_notification,
+            "采集完成: 热门视频",
+            f"成功采集 {total} 个热门视频 (平台: {platform_name})",
+            "success",
+        )
     except Exception as exc:
         session.rollback()
         repo.log_crawl(platform_name, "popular", "failed", 0, str(exc), started_at=started_at)
         session.commit()
         logger.error("[scheduler] Failed to crawl popular from %s: %s", platform_name, exc)
+        await asyncio.to_thread(
+            send_notification,
+            "采集失败: 热门视频",
+            f"平台 {platform_name} 热门视频采集失败: {exc}",
+            "failure",
+        )
     finally:
         await adapter.close()
         session.close()
@@ -61,11 +76,23 @@ async def crawl_rankings_job(platform_name: str = "bilibili", category: str = "a
         logger.info(
             "[scheduler] Crawled %d ranking entries from %s (%s)", count, platform_name, category
         )
+        await asyncio.to_thread(
+            send_notification,
+            "采集完成: 排行榜",
+            f"成功采集 {count} 条排行榜数据 (平台: {platform_name}, 分类: {category})",
+            "success",
+        )
     except Exception as exc:
         session.rollback()
         repo.log_crawl(platform_name, "ranking", "failed", 0, str(exc), started_at=started_at)
         session.commit()
         logger.error("[scheduler] Failed to crawl rankings from %s: %s", platform_name, exc)
+        await asyncio.to_thread(
+            send_notification,
+            "采集失败: 排行榜",
+            f"平台 {platform_name} 排行榜采集失败: {exc}",
+            "failure",
+        )
     finally:
         await adapter.close()
         session.close()

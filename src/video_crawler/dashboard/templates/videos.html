@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+
+{% block title %}视频浏览 - Video Crawler{% endblock %}
+{% block nav_videos %}active{% endblock %}
+
+{% block content %}
+<h4 class="mb-4"><i class="bi bi-camera-video me-2"></i>视频浏览</h4>
+
+<!-- Search Bar -->
+<div class="search-bar">
+    <form id="searchForm" class="row g-2 align-items-end" onsubmit="return false">
+        <div class="col-md-3">
+            <label class="form-label small text-muted">分区</label>
+            <select class="form-select" id="filterCategory">
+                <option value="">全部分区</option>
+                {% for key, label in categories.items() %}
+                <option value="{{ key }}">{{ label }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="col-md-5">
+            <label class="form-label small text-muted">关键词搜索</label>
+            <div class="input-group">
+                <input type="text" class="form-control" id="filterKeyword" placeholder="输入视频标题关键词...">
+                <button class="btn btn-primary" type="button" id="btnSearch">
+                    <i class="bi bi-search me-1"></i>搜索
+                </button>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <label class="form-label small text-muted">每页</label>
+            <select class="form-select" id="filterLimit">
+                <option value="12">12</option>
+                <option value="24" selected>24</option>
+                <option value="48">48</option>
+            </select>
+        </div>
+        <div class="col-md-2 text-end">
+            <span class="text-muted small" id="resultInfo"></span>
+        </div>
+    </form>
+</div>
+
+<!-- Video Grid -->
+<div class="row g-3" id="videoGrid">
+    <div class="col-12 text-center text-muted py-5">
+        <div class="spinner-border text-primary" role="status"></div>
+        <div class="mt-2">加载中...</div>
+    </div>
+</div>
+
+<!-- Pagination -->
+<nav class="mt-4">
+    <ul class="pagination justify-content-center" id="pagination"></ul>
+</nav>
+{% endblock %}
+
+{% block scripts %}
+<script src="/static/js/videos.js"></script>
+{% endblock %}

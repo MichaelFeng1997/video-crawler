@@ -12,8 +12,8 @@
 | CLI 工具 | 命令行采集和数据查看 | v0.1.0 |
 | 定时调度 | APScheduler 自动定时采集（热门 30min、排行榜 1h） | v0.2.0 |
 | REST API | FastAPI 数据查询接口（视频列表、详情、排行榜、历史） | v0.2.0 |
-| 可视化仪表盘 | 排行榜、趋势图表、数据总览 | 规划中 |
-| 多渠道通知 | 热度异常检测 + 邮件/Telegram/Server酱推送 | 规划中 |
+| 可视化仪表盘 | 排行榜、趋势图表、数据总览（Chart.js） | v0.3.0 |
+| 多渠道通知 | 采集完成/失败自动推送（apprise 80+ 渠道） | v0.3.0 |
 | 抖音/YouTube | 跨平台数据采集 | 规划中 |
 
 ## 快速开始
@@ -145,7 +145,7 @@ $ python -m video_crawler show-stats
 
 - [x] **Phase 1 — MVP**: B站数据采集 CLI + SQLite 存储 + 统计时间序列
 - [x] **Phase 2 — 调度 + API**: APScheduler 定时采集 + FastAPI REST API
-- [ ] **Phase 3 — 仪表盘 + 通知**: Web 可视化 + 多渠道异常通知
+- [x] **Phase 3 — 仪表盘 + 通知**: Web 可视化 + 多渠道通知
 - [ ] **Phase 4 — 平台扩展**: YouTube Data API + 抖音网页解析
 - [ ] **Phase 5 — 高级功能**: 全文搜索、数据导出、Docker 部署
 

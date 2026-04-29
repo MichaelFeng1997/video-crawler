@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "video-crawler"
-version = "0.2.0"
+version = "0.3.0"
 description = "多平台视频数据采集与分析工具"
 requires-python = ">=3.11"
 dependencies = [
@@ -32,6 +32,9 @@ video-crawler = "video_crawler.__main__:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]
+
+[tool.setuptools.package-data]
+video_crawler = ["dashboard/templates/*.html", "dashboard/static/**/*"]
 
 [tool.ruff]
 target-version = "py311"

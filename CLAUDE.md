@@ -38,7 +38,12 @@ video-crawler/
 │   │   └── routes/         # health, videos, rankings
 │   ├── scheduler/
 │   │   └── jobs.py         # APScheduler 定时任务
-│   └── dashboard/          # Web 仪表盘 (Phase 3)
+│   ├── notifications/
+│   │   └── notifier.py     # apprise 通知封装
+│   └── dashboard/
+│       ├── routes.py       # 仪表盘 HTML 路由
+│       ├── templates/      # Jinja2 模板 (base, index, videos, video_detail, rankings)
+│       └── static/         # CSS + JS (dashboard.css, charts.js, etc.)
 ├── tests/
 ├── data/                   # SQLite 文件 (gitignored)
 └── docs/                   # 产品文档
@@ -99,6 +104,20 @@ videos + video_stats 分离设计，video_stats 为追加式时间序列。
 | GET | /api/videos/{platform}/{video_id} | 视频详情 + 统计历史 |
 | GET | /api/rankings/{platform} | 最新排行榜 |
 | GET | /api/rankings/{platform}/history | 排行榜历史 |
+
+## 仪表盘页面
+
+| 路径 | 说明 |
+|------|------|
+| / | 首页：统计卡片 + 采集日志 + 热门视频 |
+| /videos | 视频浏览：搜索/筛选/分页 |
+| /videos/{platform}/{video_id} | 视频详情 + Chart.js 趋势图 |
+| /rankings | 排行榜表格 + 分区选择 |
+
+## 通知配置
+
+在 `.env` 中设置 `NOTIFY_URLS`（逗号分隔），采集完成/失败时自动推送。
+示例：`NOTIFY_URLS=tgram://bot_token/chat_id,serverchan://sendkey`
 
 ## 定时任务
 

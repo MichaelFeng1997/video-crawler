@@ -226,3 +226,34 @@ class VideoRepository:
             .scalars()
             .all()
         )
+
+    def get_crawl_logs(self, limit: int = 20) -> list[CrawlLogRow]:
+        return list(
+            self.session.execute(
+                select(CrawlLogRow).order_by(CrawlLogRow.finished_at.desc()).limit(limit)
+            )
+            .scalars()
+            .all()
+        )
+
+    def get_top_videos_by_views(
+        self, platform: str | None = None, limit: int = 10
+    ) -> list[tuple[VideoRow, VideoStatRow]]:
+        latest_stat = (
+            select(
+                VideoStatRow.video_id,
+                func.max(VideoStatRow.id).label("max_id"),
+            )
+            .group_by(VideoStatRow.video_id)
+            .subquery()
+        )
+        stmt = (
+            select(VideoRow, VideoStatRow)
+            .join(latest_stat, VideoRow.id == latest_stat.c.video_id)
+            .join(VideoStatRow, VideoStatRow.id == latest_stat.c.max_id)
+            .order_by(VideoStatRow.view_count.desc())
+            .limit(limit)
+        )
+        if platform:
+            stmt = stmt.where(VideoRow.platform == platform)
+        return [(video, stat) for video, stat in self.session.execute(stmt).all()]

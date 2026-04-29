@@ -55,10 +55,37 @@
 
 ---
 
+## [0.3.0] - 2026-04-29
+
+新增可视化仪表盘和多渠道通知能力。
+
+### 新增
+
+- **Web 可视化仪表盘** — Jinja2 + Bootstrap 5 + Chart.js，4 个页面
+  - 首页：统计卡片、采集日志、热门视频 TOP 5、自动刷新
+  - 视频浏览：分区筛选、关键词搜索、分页卡片网格
+  - 视频详情：视频信息 + Chart.js 多指标趋势折线图（双 Y 轴）
+  - 排行榜：17 个分区选择、排名表格（金银铜徽章）
+- **apprise 多渠道通知** — 采集成功/失败自动推送
+  - 支持 Telegram、邮件、Server酱等 80+ 通知渠道
+  - 通过 `NOTIFY_URLS` 环境变量配置，逗号分隔多个渠道
+  - 异常安全，通知失败不影响调度器运行
+- **仪表盘路由** — `/`、`/videos`、`/videos/{platform}/{video_id}`、`/rankings`
+- **Repository 新方法** — `get_crawl_logs()`、`get_top_videos_by_views()`
+
+### 技术细���
+
+- Chart.js 4.x 双 Y 轴折线图（播放量 vs 互动数据）
+- Bootstrap 5 + Bootstrap Icons 全 CDN 加载，零构建工具
+- `asyncio.to_thread` 包装 apprise 同步调用，不阻塞事件循环
+- 6 个仪表盘测试 + 3 个通知测试
+- 总计 26 个测试全部通过
+
+---
+
 ## [Unreleased]
 
 ### 规划中
 
-- Phase 3: Jinja2 + Chart.js 可视化仪表盘 + apprise 多渠道通知
 - Phase 4: YouTube Data API v3 适配器 + 抖音网页解析适配器
 - Phase 5: 全文搜索 (FTS5)、数据导出、Docker 部署
