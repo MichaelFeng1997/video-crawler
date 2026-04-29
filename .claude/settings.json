@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "defaultMode": "auto",
+    "allow": [
+      "Bash",
+      "Edit",
+      "Write",
+      "Read"
+    ]
+  }
+}

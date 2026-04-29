@@ -9,7 +9,15 @@
 <!-- Search Bar -->
 <div class="search-bar">
     <form id="searchForm" class="row g-2 align-items-end" onsubmit="return false">
-        <div class="col-md-3">
+        <div class="col-md-2">
+            <label class="form-label small text-muted">平台</label>
+            <select class="form-select" id="filterPlatform">
+                <option value="">全部平台</option>
+                <option value="bilibili">B站</option>
+                <option value="youtube">YouTube</option>
+            </select>
+        </div>
+        <div class="col-md-2">
             <label class="form-label small text-muted">分区</label>
             <select class="form-select" id="filterCategory">
                 <option value="">全部分区</option>
@@ -18,7 +26,7 @@
                 {% endfor %}
             </select>
         </div>
-        <div class="col-md-5">
+        <div class="col-md-4">
             <label class="form-label small text-muted">关键词搜索</label>
             <div class="input-group">
                 <input type="text" class="form-control" id="filterKeyword" placeholder="输入视频标题关键词...">
@@ -56,5 +64,8 @@
 {% endblock %}
 
 {% block scripts %}
+<script>
+    const PLATFORM_CATEGORIES = {{ platform_categories | tojson }};
+</script>
 <script src="/static/js/videos.js"></script>
 {% endblock %}

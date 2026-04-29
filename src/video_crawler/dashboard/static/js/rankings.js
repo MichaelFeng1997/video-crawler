@@ -1,18 +1,35 @@
 document.addEventListener('DOMContentLoaded', () => {
+    const platformSelect = document.getElementById('platformSelect');
     const categorySelect = document.getElementById('categorySelect');
     const rankingBody = document.getElementById('rankingBody');
     const snapshotInfo = document.getElementById('snapshotInfo');
     const entryCount = document.getElementById('entryCount');
+    const authorHeader = document.getElementById('authorHeader');
 
+    platformSelect.addEventListener('change', () => {
+        updateCategories();
+        loadRankings();
+    });
     categorySelect.addEventListener('change', loadRankings);
+
+    function updateCategories() {
+        const platform = platformSelect.value;
+        const cats = PLATFORM_CATEGORIES[platform] || {};
+        categorySelect.innerHTML = Object.entries(cats).map(([key, label]) =>
+            `<option value="${key}" ${key === 'all' ? 'selected' : ''}>${label}</option>`
+        ).join('');
+        authorHeader.textContent = platform === 'youtube' ? '频道' : 'UP主';
+    }
+
     loadRankings();
 
     async function loadRankings() {
+        const platform = platformSelect.value;
         const category = categorySelect.value;
         rankingBody.innerHTML = '<tr><td colspan="5" class="loading-state"><div class="spinner-border text-primary"></div><p class="mt-2">加载中...</p></td></tr>';
 
         try {
-            const resp = await fetch(`/api/rankings/bilibili?category=${category}`);
+            const resp = await fetch(`/api/rankings/${platform}?category=${category}`);
             const data = await resp.json();
 
             if (data.snapshot_time) {

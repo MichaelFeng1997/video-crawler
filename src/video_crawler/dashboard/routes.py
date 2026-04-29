@@ -14,7 +14,7 @@ router = APIRouter(tags=["dashboard"])
 _TEMPLATE_DIR = Path(__file__).resolve().parent / "templates"
 templates = Jinja2Templates(directory=str(_TEMPLATE_DIR))
 
-CATEGORY_LABELS = {
+BILIBILI_CATEGORIES = {
     "all": "全站",
     "animation": "动画",
     "music": "音乐",
@@ -32,6 +32,28 @@ CATEGORY_LABELS = {
     "movie": "电影",
     "tv": "电视剧",
     "documentary": "纪录片",
+}
+
+YOUTUBE_CATEGORIES = {
+    "all": "全部",
+    "film": "电影",
+    "autos": "汽车",
+    "music": "音乐",
+    "pets": "宠物",
+    "sports": "体育",
+    "gaming": "游戏",
+    "people": "人物",
+    "comedy": "喜剧",
+    "entertainment": "娱乐",
+    "news": "新闻",
+    "howto": "教程",
+    "education": "教育",
+    "science": "科技",
+}
+
+PLATFORM_CATEGORIES = {
+    "bilibili": BILIBILI_CATEGORIES,
+    "youtube": YOUTUBE_CATEGORIES,
 }
 
 
@@ -63,7 +85,7 @@ def videos_page(request: Request):
     return templates.TemplateResponse(
         request,
         "videos.html",
-        {"categories": CATEGORY_LABELS},
+        {"categories": BILIBILI_CATEGORIES, "platform_categories": PLATFORM_CATEGORIES},
     )
 
 
@@ -92,5 +114,5 @@ def rankings_page(request: Request):
     return templates.TemplateResponse(
         request,
         "rankings.html",
-        {"categories": CATEGORY_LABELS},
+        {"categories": BILIBILI_CATEGORIES, "platform_categories": PLATFORM_CATEGORIES},
     )
