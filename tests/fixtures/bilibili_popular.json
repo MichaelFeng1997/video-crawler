@@ -1,0 +1,53 @@
+{
+  "code": 0,
+  "message": "0",
+  "data": {
+    "list": [
+      {
+        "bvid": "BV1test000001",
+        "title": "测试视频标题一",
+        "desc": "这是一个测试视频描述",
+        "pic": "https://i0.hdslb.com/bfs/archive/test1.jpg",
+        "duration": 300,
+        "pubdate": 1714300000,
+        "tname": "科技",
+        "owner": {
+          "mid": 12345,
+          "name": "测试UP主"
+        },
+        "stat": {
+          "view": 1000000,
+          "like": 50000,
+          "coin": 20000,
+          "favorite": 30000,
+          "reply": 5000,
+          "share": 3000,
+          "danmaku": 8000
+        }
+      },
+      {
+        "bvid": "BV1test000002",
+        "title": "测试视频标题二",
+        "desc": "另一个测试视频",
+        "pic": "https://i0.hdslb.com/bfs/archive/test2.jpg",
+        "duration": 600,
+        "pubdate": 1714400000,
+        "tname": "游戏",
+        "owner": {
+          "mid": 67890,
+          "name": "另一个UP主"
+        },
+        "stat": {
+          "view": 500000,
+          "like": 25000,
+          "coin": 10000,
+          "favorite": 15000,
+          "reply": 2500,
+          "share": 1500,
+          "danmaku": 4000
+        }
+      }
+    ],
+    "no_more": false
+  }
+}

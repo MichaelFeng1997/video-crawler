@@ -1,0 +1,54 @@
+{
+  "code": 0,
+  "message": "0",
+  "data": {
+    "list": [
+      {
+        "bvid": "BV1rank000001",
+        "title": "排行榜第一名视频",
+        "desc": "排行榜视频描述",
+        "pic": "https://i0.hdslb.com/bfs/archive/rank1.jpg",
+        "duration": 450,
+        "pubdate": 1714200000,
+        "tname": "音乐",
+        "score": 1500000,
+        "owner": {
+          "mid": 11111,
+          "name": "排行UP主A"
+        },
+        "stat": {
+          "view": 5000000,
+          "like": 200000,
+          "coin": 80000,
+          "favorite": 100000,
+          "reply": 20000,
+          "share": 15000,
+          "danmaku": 30000
+        }
+      },
+      {
+        "bvid": "BV1rank000002",
+        "title": "排行��第二名视频",
+        "desc": "第二名描述",
+        "pic": "https://i0.hdslb.com/bfs/archive/rank2.jpg",
+        "duration": 200,
+        "pubdate": 1714250000,
+        "tname": "音乐",
+        "score": 1200000,
+        "owner": {
+          "mid": 22222,
+          "name": "排行UP主B"
+        },
+        "stat": {
+          "view": 3000000,
+          "like": 150000,
+          "coin": 60000,
+          "favorite": 70000,
+          "reply": 12000,
+          "share": 8000,
+          "danmaku": 20000
+        }
+      }
+    ]
+  }
+}
