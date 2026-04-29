@@ -1,0 +1,52 @@
+from __future__ import annotations
+
+import logging
+from contextlib import asynccontextmanager
+
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+
+from video_crawler.api.routes import health, rankings, videos
+from video_crawler.db.engine import init_db
+from video_crawler.scheduler.jobs import create_scheduler
+
+logger = logging.getLogger(__name__)
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    init_db()
+    logger.info("Database initialized")
+
+    scheduler = create_scheduler()
+    scheduler.start()
+    logger.info("Scheduler started with %d jobs", len(scheduler.get_jobs()))
+
+    yield
+
+    scheduler.shutdown(wait=False)
+    logger.info("Scheduler stopped")
+
+
+def create_app() -> FastAPI:
+    import video_crawler.platforms  # noqa: F401 — register adapters
+
+    app = FastAPI(
+        title="Video Crawler API",
+        description="多平台视频数据采集与分析工具",
+        version="0.2.0",
+        lifespan=lifespan,
+    )
+
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=["*"],
+        allow_methods=["*"],
+        allow_headers=["*"],
+    )
+
+    app.include_router(health.router)
+    app.include_router(videos.router)
+    app.include_router(rankings.router)
+
+    return app

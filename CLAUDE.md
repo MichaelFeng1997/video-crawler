@@ -32,8 +32,12 @@ video-crawler/
 │   │   └── repository.py   # 数据访问层
 │   ├── utils/
 │   │   └── http.py         # 限速 HTTP 客户端
-│   ├── api/                # FastAPI (Phase 2)
-│   ├── scheduler/          # APScheduler (Phase 2)
+│   ├── api/
+│   │   ├── app.py          # FastAPI 应用 + lifespan
+│   │   ├── deps.py         # 依赖注入 (get_db)
+│   │   └── routes/         # health, videos, rankings
+│   ├── scheduler/
+│   │   └── jobs.py         # APScheduler 定时任务
 │   └── dashboard/          # Web 仪表盘 (Phase 3)
 ├── tests/
 ├── data/                   # SQLite 文件 (gitignored)
@@ -51,6 +55,10 @@ source .venv/bin/activate
 python -m video_crawler crawl-popular
 python -m video_crawler crawl-rankings
 python -m video_crawler show-stats
+
+# 启动服务（API + 定时调度）
+python -m video_crawler serve
+# API docs: http://localhost:8000/docs
 
 # 测试
 make test
@@ -80,3 +88,21 @@ videos + video_stats 分离设计，video_stats 为追加式时间序列。
 | `crawl-popular [--pages N]` | 采集B站热门视频 |
 | `crawl-rankings [--category CAT] [--show-top N]` | 采集B站排行榜 |
 | `show-stats` | 显示数据库统计 |
+| `serve [--host H] [--port P]` | 启动 API 服务 + 定时调度 |
+
+## API 端点
+
+| 方法 | 路径 | 说明 |
+|------|------|------|
+| GET | /api/health | 健康检查 |
+| GET | /api/videos | 视频列表（分页、筛选、搜索） |
+| GET | /api/videos/{platform}/{video_id} | 视频详情 + 统计历史 |
+| GET | /api/rankings/{platform} | 最新排行榜 |
+| GET | /api/rankings/{platform}/history | 排行榜历史 |
+
+## 定时任务
+
+| 任务 | 间隔 | 说明 |
+|------|------|------|
+| crawl_popular_bilibili | 30 分钟 | 采集 B站 热门视频 (3 页) |
+| crawl_rankings_bilibili | 1 小时 | 采集 B站 全站排行榜 |

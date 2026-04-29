@@ -28,11 +28,37 @@
 
 ---
 
+## [0.2.0] - 2026-04-29
+
+新增定时调度和 REST API，实现自动化采集和数据查询能力。
+
+### 新增
+
+- **定时调度** — APScheduler 自动定时采集（热门视频 30 分钟、排行榜 1 小时）
+- **REST API** — FastAPI 提供 5 个数据查询端点
+  - `GET /api/health` — 健康检查 + 系统状态
+  - `GET /api/videos` — 视频列表（分页、分区筛选、关键词搜索）
+  - `GET /api/videos/{platform}/{video_id}` — 视频详情 + 统计历史时间序列
+  - `GET /api/rankings/{platform}` — 最新排行榜快照
+  - `GET /api/rankings/{platform}/history` — 排行榜历史变动
+- **`serve` 命令** — 统一入口启动 API 服务 + 调度器
+- **OpenAPI 文档** — 自动生成交互式 API 文档 (`/docs`)
+- **CORS 支持** — 允许前端跨域访问 API
+
+### 技术细节
+
+- FastAPI + Uvicorn ASGI 服务器
+- APScheduler AsyncIOScheduler 异步调度
+- FastAPI 依赖注入管理数据库会话
+- 10 个 API 测试（health + videos + rankings）
+- 总计 17 个测试全部通过
+
+---
+
 ## [Unreleased]
 
 ### 规划中
 
-- Phase 2: APScheduler 定时采集 + FastAPI REST API
 - Phase 3: Jinja2 + Chart.js 可视化仪表盘 + apprise 多渠道通知
 - Phase 4: YouTube Data API v3 适配器 + 抖音网页解析适配器
 - Phase 5: 全文搜索 (FTS5)、数据导出、Docker 部署

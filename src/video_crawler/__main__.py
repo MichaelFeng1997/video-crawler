@@ -124,6 +124,21 @@ def cmd_show_stats(args):
     session.close()
 
 
+def cmd_serve(args):
+    import uvicorn
+
+    from video_crawler.api.app import create_app
+
+    host = args.host or settings.server_host
+    port = args.port or settings.server_port
+
+    app = create_app()
+    print(f"Starting Video Crawler server at http://{host}:{port}")
+    print(f"  API docs: http://{host}:{port}/docs")
+    print("  Scheduler: enabled (popular every 30min, rankings every 1h)")
+    uvicorn.run(app, host=host, port=port, log_level=settings.log_level.lower())
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         prog="video-crawler",
@@ -144,6 +159,14 @@ def build_parser() -> argparse.ArgumentParser:
 
     sub.add_parser("show-stats", help="Show database statistics")
 
+    p_serve = sub.add_parser("serve", help="Start API server with scheduler")
+    p_serve.add_argument(
+        "--host", type=str, default=None, help="Host (default: from .env)"
+    )
+    p_serve.add_argument(
+        "--port", type=int, default=None, help="Port (default: from .env)"
+    )
+
     return parser
 
 
@@ -161,6 +184,8 @@ def main():
         asyncio.run(cmd_crawl_rankings(args))
     elif args.command == "show-stats":
         cmd_show_stats(args)
+    elif args.command == "serve":
+        cmd_serve(args)
     else:
         parser.print_help()
         sys.exit(1)

@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from datetime import UTC, datetime
+from datetime import UTC, datetime, timedelta
 
 from sqlalchemy import func, select
 from sqlalchemy.orm import Session
@@ -13,6 +13,9 @@ from video_crawler.models.db import (
     VideoStatRow,
 )
 from video_crawler.models.domain import RankingSnapshot, Video
+
+# Re-export for type hints in API layer
+__all__ = ["VideoRepository"]
 
 
 class VideoRepository:
@@ -128,3 +131,98 @@ class VideoRepository:
         )
         self.session.add(log)
         return log
+
+    # --- API query methods ---
+
+    def list_videos(
+        self,
+        platform: str | None = None,
+        category: str | None = None,
+        keyword: str | None = None,
+        limit: int = 20,
+        offset: int = 0,
+    ) -> tuple[list[VideoRow], int]:
+        stmt = select(VideoRow)
+        count_stmt = select(func.count(VideoRow.id))
+
+        if platform:
+            stmt = stmt.where(VideoRow.platform == platform)
+            count_stmt = count_stmt.where(VideoRow.platform == platform)
+        if category:
+            stmt = stmt.where(VideoRow.category == category)
+            count_stmt = count_stmt.where(VideoRow.category == category)
+        if keyword:
+            pattern = f"%{keyword}%"
+            stmt = stmt.where(VideoRow.title.ilike(pattern))
+            count_stmt = count_stmt.where(VideoRow.title.ilike(pattern))
+
+        total = self.session.execute(count_stmt).scalar_one()
+        rows = (
+            self.session.execute(
+                stmt.order_by(VideoRow.updated_at.desc()).limit(limit).offset(offset)
+            )
+            .scalars()
+            .all()
+        )
+        return list(rows), total
+
+    def get_video(self, platform: str, video_id: str) -> VideoRow | None:
+        return self.session.execute(
+            select(VideoRow).where(
+                VideoRow.platform == platform, VideoRow.video_id == video_id
+            )
+        ).scalar_one_or_none()
+
+    def get_video_stats_history(
+        self, db_video_id: int, limit: int = 100
+    ) -> list[VideoStatRow]:
+        return list(
+            self.session.execute(
+                select(VideoStatRow)
+                .where(VideoStatRow.video_id == db_video_id)
+                .order_by(VideoStatRow.crawled_at.asc())
+                .limit(limit)
+            )
+            .scalars()
+            .all()
+        )
+
+    def get_latest_ranking(
+        self, platform: str, category: str = "all"
+    ) -> RankingSnapshotRow | None:
+        return self.session.execute(
+            select(RankingSnapshotRow)
+            .where(
+                RankingSnapshotRow.platform == platform,
+                RankingSnapshotRow.category == category,
+            )
+            .order_by(RankingSnapshotRow.snapshot_time.desc())
+            .limit(1)
+        ).scalar_one_or_none()
+
+    def get_ranking_entries(self, snapshot_id: int) -> list[tuple[RankingEntryRow, VideoRow]]:
+        rows = self.session.execute(
+            select(RankingEntryRow, VideoRow)
+            .join(VideoRow, RankingEntryRow.video_id == VideoRow.id)
+            .where(RankingEntryRow.snapshot_id == snapshot_id)
+            .order_by(RankingEntryRow.rank)
+        ).all()
+        return [(entry, video) for entry, video in rows]
+
+    def get_ranking_history(
+        self, platform: str, category: str = "all", days: int = 7
+    ) -> list[RankingSnapshotRow]:
+        cutoff = datetime.now(UTC) - timedelta(days=days)
+        return list(
+            self.session.execute(
+                select(RankingSnapshotRow)
+                .where(
+                    RankingSnapshotRow.platform == platform,
+                    RankingSnapshotRow.category == category,
+                    RankingSnapshotRow.snapshot_time >= cutoff,
+                )
+                .order_by(RankingSnapshotRow.snapshot_time.desc())
+            )
+            .scalars()
+            .all()
+        )

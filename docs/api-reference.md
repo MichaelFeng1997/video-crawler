@@ -4,8 +4,8 @@
 
 Video Crawler 提供两种交互方式：
 
-1. **CLI 命令行**（Phase 1，当前可用）
-2. **REST API**（Phase 2，规划中）
+1. **CLI 命令行**（v0.1.0+）
+2. **REST API**（v0.2.0+，通过 `python -m video_crawler serve` 启动）
 
 本文档描述所有已实现和规划中的接口。
 
@@ -105,9 +105,9 @@ python -m video_crawler show-stats
 
 ---
 
-## REST API（Phase 2 规划）
+## REST API
 
-Phase 2 将提供 FastAPI REST API，通过 `python -m video_crawler serve` 启动。
+通过 `python -m video_crawler serve` 启动 FastAPI REST API 服务。
 
 ### 通用约定
 
