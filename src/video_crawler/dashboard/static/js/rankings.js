@@ -30,18 +30,18 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             const maxScore = Math.max(...entries.map(e => e.score || 0), 1);
-            rankingBody.innerHTML = entries.map(e => {
+            rankingBody.innerHTML = entries.map((e, i) => {
                 const v = e.video || {};
                 const rankClass = e.rank <= 3 ? `rank-${e.rank}` : 'rank-other';
                 const pct = Math.round(((e.score || 0) / maxScore) * 100);
                 return `
-                    <tr onclick="window.location='/videos/${v.platform}/${v.video_id}'" style="cursor:pointer">
+                    <tr class="animate-in" style="animation-delay:${i * 0.02}s" onclick="window.location='/videos/${v.platform}/${v.video_id}'" >
                         <td>
                             <span class="rank-badge ${rankClass}">${e.rank}</span>
                         </td>
                         <td>
                             <img src="${v.cover_url || ''}" class="video-thumbnail-sm" alt=""
-                                 onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2280%22 height=%2245%22><rect fill=%22%23dee2e6%22 width=%22100%25%22 height=%22100%25%22/></svg>'">
+                                 onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2280%22 height=%2245%22><rect fill=%22%231e293b%22 width=%22100%25%22 height=%22100%25%22/></svg>'">
                         </td>
                         <td>
                             <div class="text-truncate fw-medium" style="max-width:400px">${escapeHtml(v.title || '')}</div>

@@ -1,11 +1,11 @@
 const CHART_COLORS = {
-    view_count: '#4e79a7',
-    like_count: '#e15759',
-    coin_count: '#f28e2b',
-    favorite_count: '#76b7b2',
-    reply_count: '#59a14f',
-    share_count: '#af7aa1',
-    danmaku_count: '#ff9da7',
+    view_count: '#818cf8',
+    like_count: '#f87171',
+    coin_count: '#fbbf24',
+    favorite_count: '#22d3ee',
+    reply_count: '#34d399',
+    share_count: '#c084fc',
+    danmaku_count: '#fb7185',
 };
 
 const METRIC_LABELS = {
@@ -48,11 +48,14 @@ function createStatsChart(canvasId, statsHistory) {
         label: METRIC_LABELS[key],
         data: statsHistory.map(s => s[key] || 0),
         borderColor: CHART_COLORS[key],
-        backgroundColor: CHART_COLORS[key] + '20',
+        backgroundColor: CHART_COLORS[key] + '15',
         borderWidth: 2,
         pointRadius: 3,
-        pointHoverRadius: 6,
-        tension: 0.3,
+        pointHoverRadius: 7,
+        pointBackgroundColor: CHART_COLORS[key],
+        pointBorderColor: '#1e293b',
+        pointBorderWidth: 2,
+        tension: 0.4,
         yAxisID: 'y1',
     }));
 
@@ -65,11 +68,14 @@ function createStatsChart(canvasId, statsHistory) {
                     label: METRIC_LABELS.view_count,
                     data: viewData,
                     borderColor: CHART_COLORS.view_count,
-                    backgroundColor: CHART_COLORS.view_count + '20',
-                    borderWidth: 2,
+                    backgroundColor: createGradient(canvas, CHART_COLORS.view_count),
+                    borderWidth: 2.5,
                     pointRadius: 3,
-                    pointHoverRadius: 6,
-                    tension: 0.3,
+                    pointHoverRadius: 7,
+                    pointBackgroundColor: CHART_COLORS.view_count,
+                    pointBorderColor: '#1e293b',
+                    pointBorderWidth: 2,
+                    tension: 0.4,
                     yAxisID: 'y',
                     fill: true,
                 },
@@ -82,38 +88,57 @@ function createStatsChart(canvasId, statsHistory) {
             interaction: { mode: 'index', intersect: false },
             plugins: {
                 tooltip: {
-                    backgroundColor: 'rgba(26, 26, 46, 0.9)',
-                    titleColor: '#fff',
-                    bodyColor: '#e8eaed',
-                    borderColor: 'rgba(255,255,255,0.1)',
+                    backgroundColor: 'rgba(15, 23, 42, 0.95)',
+                    titleColor: '#f1f5f9',
+                    bodyColor: '#94a3b8',
+                    borderColor: 'rgba(99, 102, 241, 0.3)',
                     borderWidth: 1,
-                    cornerRadius: 8,
-                    padding: 10,
+                    cornerRadius: 10,
+                    padding: 12,
+                    displayColors: true,
+                    boxPadding: 4,
                     callbacks: {
-                        label: ctx => ctx.dataset.label + ': ' + formatNumber(ctx.parsed.y),
+                        label: ctx => ' ' + ctx.dataset.label + ': ' + formatNumber(ctx.parsed.y),
                     },
                 },
-                legend: { position: 'top' },
+                legend: {
+                    position: 'top',
+                    labels: {
+                        color: '#94a3b8',
+                        usePointStyle: true,
+                        pointStyle: 'circle',
+                        padding: 16,
+                    },
+                },
             },
             scales: {
+                x: {
+                    ticks: { color: '#64748b' },
+                    grid: { color: 'rgba(148, 163, 184, 0.06)' },
+                },
                 y: {
                     type: 'linear',
                     position: 'left',
-                    title: { display: true, text: '播放量' },
-                    ticks: {
-                        callback: v => formatNumber(v),
-                    },
+                    title: { display: true, text: '播放量', color: '#64748b' },
+                    ticks: { color: '#64748b', callback: v => formatNumber(v) },
+                    grid: { color: 'rgba(148, 163, 184, 0.06)' },
                 },
                 y1: {
                     type: 'linear',
                     position: 'right',
-                    title: { display: true, text: '互动数据' },
+                    title: { display: true, text: '互动数据', color: '#64748b' },
                     grid: { drawOnChartArea: false },
-                    ticks: {
-                        callback: v => formatNumber(v),
-                    },
+                    ticks: { color: '#64748b', callback: v => formatNumber(v) },
                 },
             },
         },
     });
+}
+
+function createGradient(canvas, color) {
+    const ctx = canvas.getContext('2d');
+    const gradient = ctx.createLinearGradient(0, 0, 0, canvas.parentElement?.clientHeight || 400);
+    gradient.addColorStop(0, color + '30');
+    gradient.addColorStop(1, color + '02');
+    return gradient;
 }

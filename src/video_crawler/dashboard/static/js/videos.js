@@ -42,19 +42,19 @@ document.addEventListener('DOMContentLoaded', () => {
             grid.innerHTML = '<div class="col-12 empty-state"><i class="bi bi-camera-video-off"></i><p>没有找到视频</p></div>';
             return;
         }
-        grid.innerHTML = items.map(v => `
-            <div class="col-sm-6 col-md-4 col-xl-3">
+        grid.innerHTML = items.map((v, i) => `
+            <div class="col-sm-6 col-md-4 col-xl-3 animate-in" style="animation-delay:${i * 0.03}s">
                 <a href="/videos/${v.platform}/${v.video_id}" class="text-decoration-none">
                     <div class="card video-card h-100">
                         <img src="${v.cover_url || ''}" class="card-img-top" alt=""
-                             onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22320%22 height=%22180%22><rect fill=%22%23dee2e6%22 width=%22100%25%22 height=%22100%25%22/><text x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 fill=%22%23adb5bd%22 font-size=%2214%22>No Image</text></svg>'">
+                             onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22320%22 height=%22180%22><rect fill=%22%231e293b%22 width=%22100%25%22 height=%22100%25%22/><text x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 fill=%22%2364748b%22 font-size=%2214%22>No Image</text></svg>'">
                         <div class="card-body py-2 px-3">
-                            <div class="text-truncate fw-medium text-dark" style="font-size:0.9rem">${escapeHtml(v.title)}</div>
+                            <div class="text-truncate fw-medium" style="font-size:0.9rem">${escapeHtml(v.title)}</div>
                             <small class="text-muted">
                                 <i class="bi bi-person me-1"></i>${escapeHtml(v.author_name || '')}
                             </small>
                         </div>
-                        <div class="card-footer bg-transparent border-0 py-2 px-3">
+                        <div class="card-footer border-0 py-2 px-3">
                             <small class="text-muted">
                                 <i class="bi bi-play-circle me-1"></i>${formatNumber(v.view_count || 0)}
                                 <span class="ms-2"><i class="bi bi-hand-thumbs-up me-1"></i>${formatNumber(v.like_count || 0)}</span>

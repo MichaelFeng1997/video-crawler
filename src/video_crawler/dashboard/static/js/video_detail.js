@@ -8,27 +8,27 @@ document.addEventListener('DOMContentLoaded', async () => {
         renderHistoryTable(data.stats_history);
     } catch (e) {
         document.getElementById('latestStats').innerHTML =
-            '<div class="col-12 text-center text-danger py-3">加载失败</div>';
+            '<div class="col-12 empty-state"><i class="bi bi-exclamation-circle"></i><p>加载失败</p></div>';
     }
 });
 
 function renderLatestStats(stats) {
     const container = document.getElementById('latestStats');
     if (!stats) {
-        container.innerHTML = '<div class="col-12 text-center text-muted py-3">暂无统计数据</div>';
+        container.innerHTML = '<div class="col-12 empty-state"><i class="bi bi-bar-chart"></i><p>暂无统计数据</p></div>';
         return;
     }
     const items = [
-        { icon: 'play-circle', label: '播放', value: stats.view_count, color: '#4e79a7' },
-        { icon: 'hand-thumbs-up', label: '点赞', value: stats.like_count, color: '#e15759' },
-        { icon: 'coin', label: '投币', value: stats.coin_count, color: '#f28e2b' },
-        { icon: 'star', label: '收藏', value: stats.favorite_count, color: '#76b7b2' },
-        { icon: 'chat-dots', label: '评论', value: stats.reply_count, color: '#59a14f' },
-        { icon: 'send', label: '分享', value: stats.share_count, color: '#af7aa1' },
-        { icon: 'body-text', label: '弹幕', value: stats.danmaku_count, color: '#ff9da7' },
+        { icon: 'play-circle', label: '播放', value: stats.view_count, color: '#818cf8' },
+        { icon: 'hand-thumbs-up', label: '点赞', value: stats.like_count, color: '#f87171' },
+        { icon: 'coin', label: '投币', value: stats.coin_count, color: '#fbbf24' },
+        { icon: 'star', label: '收藏', value: stats.favorite_count, color: '#22d3ee' },
+        { icon: 'chat-dots', label: '评论', value: stats.reply_count, color: '#34d399' },
+        { icon: 'send', label: '分享', value: stats.share_count, color: '#c084fc' },
+        { icon: 'body-text', label: '弹幕', value: stats.danmaku_count, color: '#fb7185' },
     ];
-    container.innerHTML = items.map(it => `
-        <div class="col">
+    container.innerHTML = items.map((it, i) => `
+        <div class="col animate-in" style="animation-delay:${i * 0.05}s">
             <div class="detail-stat-card" style="border-top:3px solid ${it.color}">
                 <div style="color:${it.color}"><i class="bi bi-${it.icon}" style="font-size:1.2rem"></i></div>
                 <div class="fw-bold">${formatNumber(it.value || 0)}</div>
@@ -52,7 +52,7 @@ function renderChart(history) {
 function renderHistoryTable(history) {
     const body = document.getElementById('historyBody');
     if (!history || history.length === 0) {
-        body.innerHTML = '<tr><td colspan="7" class="text-center text-muted py-3">暂无数据</td></tr>';
+        body.innerHTML = '<tr><td colspan="7" class="empty-state"><i class="bi bi-clock-history"></i><p>暂无数据</p></td></tr>';
         return;
     }
     body.innerHTML = history.slice().reverse().map(s => `
