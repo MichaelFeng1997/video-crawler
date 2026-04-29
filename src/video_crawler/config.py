@@ -18,6 +18,7 @@ class Settings(BaseSettings):
     bilibili_rpm: int = 30
     douyin_rpm: int = 10
     youtube_api_key: str = ""
+    youtube_rpm: int = 60
 
     notify_urls: str = ""
 

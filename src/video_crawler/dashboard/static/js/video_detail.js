@@ -29,7 +29,7 @@ function renderLatestStats(stats) {
     ];
     container.innerHTML = items.map(it => `
         <div class="col">
-            <div class="card border-0 shadow-sm text-center py-2">
+            <div class="detail-stat-card" style="border-top:3px solid ${it.color}">
                 <div style="color:${it.color}"><i class="bi bi-${it.icon}" style="font-size:1.2rem"></i></div>
                 <div class="fw-bold">${formatNumber(it.value || 0)}</div>
                 <small class="text-muted">${it.label}</small>

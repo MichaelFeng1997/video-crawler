@@ -14,8 +14,8 @@
 </nav>
 
 {% if not video %}
-<div class="text-center text-muted py-5">
-    <i class="bi bi-exclamation-triangle" style="font-size:3rem"></i>
+<div class="empty-state py-5">
+    <i class="bi bi-exclamation-triangle"></i>
     <h5 class="mt-3">视频未找到</h5>
     <p>该视频可能尚未被采集，请返回<a href="/videos">视频列表</a>查看。</p>
 </div>
@@ -23,11 +23,12 @@
 <div class="row g-4">
     <!-- Video Info -->
     <div class="col-lg-4">
-        <div class="card border-0 shadow-sm">
+        <div class="card">
             <img src="{{ video.cover_url }}" class="card-img-top" alt=""
+                 style="aspect-ratio:16/9;object-fit:cover"
                  onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22320%22 height=%22180%22><rect fill=%22%23dee2e6%22 width=%22100%25%22 height=%22100%25%22/></svg>'">
             <div class="card-body">
-                <h6 class="card-title">{{ video.title }}</h6>
+                <h6 class="card-title fw-bold">{{ video.title }}</h6>
                 <p class="text-muted small mb-2">
                     <i class="bi bi-person me-1"></i>{{ video.author_name }}
                     {% if video.category %}
@@ -35,11 +36,14 @@
                     {% endif %}
                 </p>
                 {% if video.description %}
-                <p class="small text-muted" style="max-height:100px;overflow-y:auto">{{ video.description[:200] }}</p>
+                <p class="small text-muted" style="max-height:160px;overflow-y:auto;line-height:1.6">{{ video.description[:300] }}</p>
                 {% endif %}
                 {% if video.url %}
                 <a href="{{ video.url }}" target="_blank" class="btn btn-sm btn-outline-primary w-100 mt-2">
-                    <i class="bi bi-box-arrow-up-right me-1"></i>在 B站 查看
+                    <i class="bi bi-box-arrow-up-right me-1"></i>
+                    {% if video.platform == 'bilibili' %}在 B站 查看
+                    {% elif video.platform == 'youtube' %}在 YouTube 查看
+                    {% else %}查看原视频{% endif %}
                 </a>
                 {% endif %}
             </div>
@@ -56,7 +60,7 @@
         </div>
 
         <!-- Chart -->
-        <div class="card border-0 shadow-sm">
+        <div class="card">
             <div class="card-header bg-white border-0 py-3">
                 <h6 class="mb-0"><i class="bi bi-graph-up me-2"></i>数据趋势</h6>
             </div>
@@ -72,7 +76,7 @@
         </div>
 
         <!-- Stats History Table -->
-        <div class="card border-0 shadow-sm mt-3">
+        <div class="card mt-3">
             <div class="card-header bg-white border-0 py-3 d-flex justify-content-between align-items-center">
                 <h6 class="mb-0"><i class="bi bi-table me-2"></i>统计历史</h6>
                 <button class="btn btn-sm btn-outline-secondary" type="button" data-bs-toggle="collapse" data-bs-target="#historyTable">

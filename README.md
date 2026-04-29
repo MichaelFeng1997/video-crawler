@@ -14,7 +14,9 @@
 | REST API | FastAPI 数据查询接口（视频列表、详情、排行榜、历史） | v0.2.0 |
 | 可视化仪表盘 | 排行榜、趋势图表、数据总览（Chart.js） | v0.3.0 |
 | 多渠道通知 | 采集完成/失败自动推送（apprise 80+ 渠道） | v0.3.0 |
-| 抖音/YouTube | 跨平台数据采集 | 规划中 |
+| YouTube 适配器 | YouTube Data API v3 热门/排行榜/搜索（14 个分类） | v0.4.0 |
+| 前端视觉升级 | Inter 字体、CSS 变量体系、得分进度条、深色 tooltip | v0.4.0 |
+| 抖音适配器 | 跨平台数据采集 | 规划中 |
 
 ## 快速开始
 
@@ -138,6 +140,7 @@ $ python -m video_crawler show-stats
 | `BILIBILI_RPM` | `30` | B站请求限速（每分钟请求数） |
 | `DOUYIN_RPM` | `10` | 抖音请求限速（每分钟请求数） |
 | `YOUTUBE_API_KEY` | (空) | YouTube Data API v3 密钥 |
+| `YOUTUBE_RPM` | `60` | YouTube 请求限速（每分钟请求数） |
 | `NOTIFY_URLS` | (空) | 通知渠道 URL，多个用逗号分隔 |
 | `LOG_LEVEL` | `INFO` | 日志级别（DEBUG/INFO/WARNING/ERROR） |
 
@@ -146,7 +149,7 @@ $ python -m video_crawler show-stats
 - [x] **Phase 1 — MVP**: B站数据采集 CLI + SQLite 存储 + 统计时间序列
 - [x] **Phase 2 — 调度 + API**: APScheduler 定时采集 + FastAPI REST API
 - [x] **Phase 3 — 仪表盘 + 通知**: Web 可视化 + 多渠道通知
-- [ ] **Phase 4 — 平台扩展**: YouTube Data API + 抖音网页解析
+- [x] **Phase 4 — YouTube + 前端优化**: YouTube Data API v3 适配器 + 前端视觉全面升级
 - [ ] **Phase 5 — 高级功能**: 全文搜索、数据导出、Docker 部署
 
 ## 技术栈

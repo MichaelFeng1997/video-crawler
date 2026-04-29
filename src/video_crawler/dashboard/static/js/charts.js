@@ -51,6 +51,7 @@ function createStatsChart(canvasId, statsHistory) {
         backgroundColor: CHART_COLORS[key] + '20',
         borderWidth: 2,
         pointRadius: 3,
+        pointHoverRadius: 6,
         tension: 0.3,
         yAxisID: 'y1',
     }));
@@ -67,6 +68,7 @@ function createStatsChart(canvasId, statsHistory) {
                     backgroundColor: CHART_COLORS.view_count + '20',
                     borderWidth: 2,
                     pointRadius: 3,
+                    pointHoverRadius: 6,
                     tension: 0.3,
                     yAxisID: 'y',
                     fill: true,
@@ -80,6 +82,13 @@ function createStatsChart(canvasId, statsHistory) {
             interaction: { mode: 'index', intersect: false },
             plugins: {
                 tooltip: {
+                    backgroundColor: 'rgba(26, 26, 46, 0.9)',
+                    titleColor: '#fff',
+                    bodyColor: '#e8eaed',
+                    borderColor: 'rgba(255,255,255,0.1)',
+                    borderWidth: 1,
+                    cornerRadius: 8,
+                    padding: 10,
                     callbacks: {
                         label: ctx => ctx.dataset.label + ': ' + formatNumber(ctx.parsed.y),
                     },

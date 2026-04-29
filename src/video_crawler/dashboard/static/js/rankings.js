@@ -9,7 +9,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     async function loadRankings() {
         const category = categorySelect.value;
-        rankingBody.innerHTML = '<tr><td colspan="5" class="text-center py-5"><div class="spinner-border text-primary"></div></td></tr>';
+        rankingBody.innerHTML = '<tr><td colspan="5" class="loading-state"><div class="spinner-border text-primary"></div><p class="mt-2">加载中...</p></td></tr>';
 
         try {
             const resp = await fetch(`/api/rankings/bilibili?category=${category}`);
@@ -25,13 +25,15 @@ document.addEventListener('DOMContentLoaded', () => {
             entryCount.textContent = `${entries.length} 条`;
 
             if (entries.length === 0) {
-                rankingBody.innerHTML = '<tr><td colspan="5" class="text-center text-muted py-5">该分区暂无排行榜数据</td></tr>';
+                rankingBody.innerHTML = '<tr><td colspan="5" class="empty-state"><i class="bi bi-trophy"></i><p>该分区暂无排行榜数据</p></td></tr>';
                 return;
             }
 
+            const maxScore = Math.max(...entries.map(e => e.score || 0), 1);
             rankingBody.innerHTML = entries.map(e => {
                 const v = e.video || {};
                 const rankClass = e.rank <= 3 ? `rank-${e.rank}` : 'rank-other';
+                const pct = Math.round(((e.score || 0) / maxScore) * 100);
                 return `
                     <tr onclick="window.location='/videos/${v.platform}/${v.video_id}'" style="cursor:pointer">
                         <td>
@@ -47,13 +49,14 @@ document.addEventListener('DOMContentLoaded', () => {
                         </td>
                         <td class="text-muted">${escapeHtml(v.author_name || '')}</td>
                         <td class="text-end">
-                            <span class="fw-bold">${formatNumber(e.score || 0)}</span>
+                            <div class="fw-bold mb-1">${formatNumber(e.score || 0)}</div>
+                            <div class="score-bar"><div class="score-bar-fill" style="width:${pct}%"></div></div>
                         </td>
                     </tr>
                 `;
             }).join('');
         } catch (e) {
-            rankingBody.innerHTML = '<tr><td colspan="5" class="text-center text-danger py-5">加载失败，请重试</td></tr>';
+            rankingBody.innerHTML = '<tr><td colspan="5" class="empty-state"><i class="bi bi-exclamation-circle"></i><p>加载失败，请重试</p></td></tr>';
         }
     }
 

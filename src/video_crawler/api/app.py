@@ -39,7 +39,7 @@ def create_app() -> FastAPI:
     app = FastAPI(
         title="Video Crawler",
         description="多平台视频数据采集与分析工具",
-        version="0.3.0",
+        version="0.4.0",
         lifespan=lifespan,
     )
 

@@ -83,9 +83,40 @@
 
 ---
 
+## [0.4.0] - 2026-04-29
+
+新增 YouTube Data API v3 适配器，全面优化前端视觉效果。
+
+### 新增
+
+- **YouTube Data API v3 适配器** — 完整的平台适配器实现
+  - 热门视频采集 (`chart=mostPopular`)
+  - 排行榜采集（14 个分类：音乐、游戏、体育、科技等）
+  - 视频搜索（基于 search 端点）
+  - ISO 8601 时长解析 (`PT1H2M3S` → 秒)
+  - 无 API Key 时安全降级（返回空结果，不崩溃）
+- **前端视觉全面升级**
+  - Inter 字体 + CSS 变量体系（颜色/阴影/圆角/过渡统一管理）
+  - 统计卡片彩色顶部边框 + 柔和图标背景
+  - 排行榜得分进度条可视化 (score bar)
+  - 金银铜排名徽章发光阴影
+  - 视频卡片 16:9 缩略图 + 平滑悬停动画
+  - 统一的加载/空状态组件
+  - 导航栏渐变背景 + 阴影
+  - Chart.js 深色 tooltip + 悬停放大点
+  - 视频详情页平台感知外链文本（B站/YouTube）
+  - 响应式移动端适配优化
+
+### 技术细节
+
+- YouTube 适配器沿用 Bilibili 完整模式（constants → parser → client → 注册）
+- 5 个 YouTube parser 测试（duration + video + popular + ranking + empty）
+- 总计 31 个测试全部通过
+
+---
+
 ## [Unreleased]
 
 ### 规划中
 
-- Phase 4: YouTube Data API v3 适配器 + 抖音网页解析适配器
 - Phase 5: 全文搜索 (FTS5)、数据导出、Docker 部署

@@ -24,7 +24,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (category) params.set('category', category);
         if (keyword) params.set('keyword', keyword);
 
-        grid.innerHTML = '<div class="col-12 text-center text-muted py-5"><div class="spinner-border text-primary"></div></div>';
+        grid.innerHTML = '<div class="col-12 loading-state"><div class="spinner-border text-primary"></div><p class="mt-2">加载中...</p></div>';
 
         try {
             const resp = await fetch('/api/videos?' + params);
@@ -33,13 +33,13 @@ document.addEventListener('DOMContentLoaded', () => {
             renderPagination(data.total, limit);
             resultInfo.textContent = `共 ${data.total} 个视频`;
         } catch (e) {
-            grid.innerHTML = '<div class="col-12 text-center text-danger py-5">加载失败，请重试</div>';
+            grid.innerHTML = '<div class="col-12 empty-state"><i class="bi bi-exclamation-circle"></i><p>加载失败，请重试</p></div>';
         }
     }
 
     function renderGrid(items) {
         if (!items || items.length === 0) {
-            grid.innerHTML = '<div class="col-12 text-center text-muted py-5">没有找到视频</div>';
+            grid.innerHTML = '<div class="col-12 empty-state"><i class="bi bi-camera-video-off"></i><p>没有找到视频</p></div>';
             return;
         }
         grid.innerHTML = items.map(v => `

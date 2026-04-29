@@ -23,7 +23,8 @@ video-crawler/
 │   ├── config.py           # pydantic-settings 配置
 │   ├── platforms/
 │   │   ├── base.py         # PlatformAdapter 抽象接口
-│   │   └── bilibili/       # B站适配器
+│   │   ├── bilibili/       # B站适配器
+│   │   └── youtube/        # YouTube 适配器
 │   ├── models/
 │   │   ├── domain.py       # 领域模型 (dataclass)
 │   │   └── db.py           # SQLAlchemy ORM 模型
@@ -75,6 +76,11 @@ make lint
 ## 环境变量
 
 复制 `.env.example` 为 `.env` 并按需修改。
+
+关键变量：
+- `YOUTUBE_API_KEY` — YouTube Data API v3 密钥（未设置时 YouTube 适配器安全降级返回空结果）
+- `YOUTUBE_RPM` — YouTube API 每分钟请求限制（默认 60）
+- `NOTIFY_URLS` — 通知渠道 URL（逗号分隔）
 
 ## 数据库
 
